@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Phân tích thời gian{% endblock %}
+{% block header %}Phân tích theo thời gian{% endblock %}
+{% block subtitle %}Số lượng trò chơi phát hành và tổng doanh số toàn cầu theo từng năm{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>4.1. Số lượng trò chơi theo năm</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=games_per_year.image) }}" alt="Số lượng trò chơi theo năm">
+    <p class="insight">
+        Năm có số lượng trò chơi cao nhất trong dataset là
+        <strong>{{ games_per_year.peak_year }}</strong> với
+        <strong>{{ games_per_year.peak_value }}</strong> bản ghi. Số lượng bản ghi giảm
+        đáng kể ở những năm sau 2016, điều này cần được xem xét cùng mức độ đầy đủ của
+        dữ liệu thay vì kết luận trực tiếp rằng hoạt động phát hành trò chơi trên thị
+        trường thực tế giảm tương ứng.
+    </p>
+</section>
+
+<section class="card">
+    <h2>4.2. Tổng doanh số toàn cầu theo năm</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=global_sales_per_year.image) }}" alt="Tổng doanh số toàn cầu theo năm">
+    <p class="insight">
+        Doanh số toàn cầu đạt mức cao nhất vào năm
+        <strong>{{ global_sales_per_year.peak_year }}</strong> với khoảng
+        <strong>{{ global_sales_per_year.peak_value }}</strong> triệu bản. Do dữ liệu ở các
+        năm cuối tương đối thưa, sự sụt giảm sau giai đoạn này cần được diễn giải thận
+        trọng, phù hợp hơn với sự khác biệt về quy mô dữ liệu ghi nhận theo năm.
+    </p>
+</section>
+{% endblock %}
