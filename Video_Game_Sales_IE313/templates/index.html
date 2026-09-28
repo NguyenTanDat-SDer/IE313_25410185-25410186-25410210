@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Trang chủ{% endblock %}
+{% block header %}Phân tích thăm dò dữ liệu Video Game Sales{% endblock %}
+{% block subtitle %}Sử dụng Pandas, Seaborn và Flask để khám phá xu hướng thị trường trò chơi điện tử{% endblock %}
+
+{% block content %}
+<section class="card intro-card">
+    <p>
+        Đề tài thực hiện phân tích thăm dò dữ liệu (Exploratory Data Analysis - EDA)
+        trên bộ dữ liệu <strong>vgsales.csv</strong>, gồm 16.598 bản ghi trò chơi điện tử
+        và doanh số tại các khu vực trên thế giới. Mục tiêu là khám phá xu hướng phát hành
+        và tiêu thụ trò chơi theo thời gian, thể loại, nền tảng và khu vực, sử dụng
+        Pandas để xử lý dữ liệu, Seaborn/Matplotlib để trực quan hóa, và Flask để xây
+        dựng Dashboard trình bày kết quả.
+    </p>
+</section>
+
+<section class="grid-cards">
+    <a href="{{ url_for('dashboard.overview') }}" class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Tổng quan dữ liệu</h3>
+        <p>Mô tả cấu trúc, kiểu dữ liệu và tình trạng giá trị thiếu của bộ dữ liệu.</p>
+    </a>
+    <a href="{{ url_for('analysis.time_analysis') }}" class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Phân tích thời gian</h3>
+        <p>Số lượng trò chơi phát hành và tổng doanh số toàn cầu theo từng năm.</p>
+    </a>
+    <a href="{{ url_for('analysis.genre_analysis') }}" class="feature-card">
+        <div class="feature-icon">🎭</div>
+        <h3>Phân tích thể loại</h3>
+        <p>So sánh tổng doanh số và doanh số trung bình giữa các thể loại trò chơi.</p>
+    </a>
+    <a href="{{ url_for('analysis.platform_analysis') }}" class="feature-card">
+        <div class="feature-icon">🕹️</div>
+        <h3>Phân tích nền tảng</h3>
+        <p>Top 10 nền tảng có tổng doanh số toàn cầu cao nhất trong dataset.</p>
+    </a>
+    <a href="{{ url_for('analysis.region_analysis') }}" class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>Phân tích khu vực &amp; Top Games</h3>
+        <p>Heatmap thể loại-khu vực, xu hướng khu vực theo thời gian và Top 10 game bán chạy.</p>
+    </a>
+</section>
+{% endblock %}
