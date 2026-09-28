@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Phân tích khu vực{% endblock %}
+{% block header %}Phân tích theo khu vực &amp; Top Games{% endblock %}
+{% block subtitle %}Heatmap thể loại-khu vực, xu hướng khu vực theo thời gian và các trò chơi bán chạy nhất{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>4.6. Heatmap doanh số theo thể loại và khu vực</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=genre_region_heatmap.image) }}" alt="Heatmap thể loại - khu vực">
+    <p class="insight">
+        Heatmap cho phép quan sát đồng thời Genre và khu vực: mức độ tiêu thụ không nhất
+        thiết giống nhau giữa các khu vực, một thể loại có tổng doanh số toàn cầu cao có
+        thể có mức đóng góp khác nhau tại từng khu vực.
+    </p>
+</section>
+
+<section class="card">
+    <h2>4.7. Doanh số các khu vực theo thời gian</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=region_sales_over_time.image) }}" alt="Doanh số khu vực theo thời gian">
+    <p class="insight">
+        Bắc Mỹ và châu Âu là những khu vực đóng góp đáng kể vào doanh số toàn cầu trong
+        nhiều giai đoạn, trong khi Nhật Bản có quy mô doanh số thấp hơn xét trên tổng thể
+        dữ liệu. Đóng góp của từng khu vực thay đổi theo từng giai đoạn thời gian.
+    </p>
+</section>
+
+<section class="card">
+    <h2>4.8. Top 10 trò chơi theo doanh số toàn cầu</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=top_games.image) }}" alt="Top 10 trò chơi theo doanh số">
+    <p class="insight">
+        <strong>{{ top_games.top_name }}</strong> đứng đầu với Global_Sales đạt
+        <strong>{{ top_games.top_value }}</strong> triệu bản, cao hơn đáng kể so với phần
+        lớn các bản ghi còn lại &mdash; cho thấy doanh số có xu hướng tập trung mạnh vào
+        một nhóm nhỏ các tựa game nổi bật.
+    </p>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr><th>#</th><th>Tên trò chơi</th><th>Nền tảng</th><th>Năm</th><th>Thể loại</th><th>Global Sales</th></tr>
+            </thead>
+            <tbody>
+                {% for row in top_games.table %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row["Name"] }}</td>
+                    <td>{{ row["Platform"] }}</td>
+                    <td>{{ row["Year"]|int if row["Year"] == row["Year"] else "N/A" }}</td>
+                    <td>{{ row["Genre"] }}</td>
+                    <td>{{ row["Global_Sales"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
