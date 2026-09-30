@@ -120,25 +120,5 @@ Phụ trách các phân tích theo khu vực, các trò chơi có doanh số cao
 
 - `analysis/analysis.py`, `routes/analysis.py` và `routes/dashboard.py` là file dùng chung: mỗi người chỉ sửa hàm/route của mình.
 
-## Cấu trúc phối hợp
 
-```text
-                    vgsales.csv
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-         25410185               25410210
-  Dữ liệu + Thời gian      Thể loại + Nền tảng
-              │                     │
-              └──────────┬──────────┘
-                         │
-                    analysis.py
-                         │
-                         ▼
-                     25410186
-             Khu vực + Tích hợp Flask
-                         │
-                         ▼
-                  Web Dashboard
-```
 
