@@ -25,41 +25,50 @@ https://www.kaggle.com/datasets/gregorut/videogamesales?select=vgsales.csv
 | 4.2 | Phân tích doanh số toàn cầu theo thời gian | 25410185 |
 | 4.3 | Phân tích doanh số theo thể loại | 25410210 |
 | 4.4 | Doanh số trung bình theo thể loại | 25410210 |
-| 4.5 | Phân tích theo nền tảng | 25410210 |
-| 4.6 | Phân tích sự khác biệt giữa các khu vực | 25410186 |
-| 4.7 | Doanh số khu vực theo thời gian | 25410186 |
-| 4.8 | Phân tích các trò chơi có doanh số cao nhất | 25410186 |
+| 4.5 | Phân tích theo nền tảng (tổng doanh số và phân phối) | 25410210 |
+| 4.6 | Phân tích theo nhà phát hành | 25410185 |
+| 4.7 | Phân tích sự khác biệt giữa các khu vực (tổng, heatmap, phân phối) | 25410186 |
+| 4.8 | Doanh số khu vực theo thời gian | 25410186 |
+| 4.9 | Phân tích các trò chơi có doanh số cao nhất | 25410186 |
+| 4.10 | Phân phối doanh số của các trò chơi | 25410186 |
 
 ## Chi tiết công việc
 
-### 25410185 – Dữ liệu và thời gian
+### 25410185 – Dữ liệu, thời gian và nhà phát hành
 
-Phụ trách phần xử lý dữ liệu ban đầu và các phân tích liên quan đến thời gian.
+Phụ trách xử lý dữ liệu ban đầu, phân tích theo thời gian và nhà phát hành.
 
 - Xử lý dữ liệu trong:
   - `analysis/data_loader.py`
   - `analysis/preprocessing.py`
-- Xây dựng các hàm:
+- Xây dựng các hàm trong `analysis.py`:
   - `analyze_games_per_year`
   - `analyze_global_sales_per_year`
+  - `analyze_top_publishers`
 - Phụ trách các route:
   - `/overview`
   - `/time-analysis`
+  - `/publisher-analysis`
 - Phụ trách các template:
   - `overview.html`
   - `time_analysis.html`
+  - `publisher_analysis.html`
 - Phụ trách biểu đồ:
-  - `fig1`: Số lượng trò chơi theo thời gian.
-  - `fig2`: Doanh số toàn cầu theo thời gian.
+  - Số lượng trò chơi theo thời gian.
+  - Doanh số toàn cầu theo thời gian.
+  - Top 10 nhà phát hành.
 
-### 25410210 – Thể loại và nền tảng
 
-Phụ trách các phân tích liên quan đến thể loại trò chơi và nền tảng.
+### 25410210 – Thể loại, nền tảng và phương pháp
+
+Phụ trách các phân tích theo thể loại và nền tảng, cùng phần phương pháp trong báo cáo.
 
 - Xây dựng các hàm trong `analysis.py`:
+  - `analyze_genre_summary` (bảng tổng hợp thể loại)
   - `analyze_genre_sales`
   - `analyze_genre_average_sales`
   - `analyze_platform_sales`
+  - `analyze_platform_distribution`
 - Phụ trách các route:
   - `/genre-analysis`
   - `/platform-analysis`
@@ -67,37 +76,49 @@ Phụ trách các phân tích liên quan đến thể loại trò chơi và nề
   - `genre_analysis.html`
   - `platform_analysis.html`
 - Phụ trách biểu đồ:
-  - `fig3`: Doanh số theo thể loại.
-  - `fig4`: Doanh số trung bình theo thể loại.
-  - `fig5`: Doanh số theo nền tảng.
+  - Doanh số theo thể loại.
+  - Doanh số trung bình theo thể loại.
+  - Doanh số theo nền tảng.
+  - Boxplot `Global_Sales` theo nền tảng.
 
-### 25410186 – Khu vực và tích hợp
+### 25410186 – Khu vực, Top games, phân phối doanh số và tích hợp
 
-Phụ trách các phân tích liên quan đến khu vực, các trò chơi có doanh số cao và phần tích hợp ứng dụng.
+Phụ trách các phân tích theo khu vực, các trò chơi có doanh số cao, phân phối doanh số và phần tích hợp ứng dụng.
 
 - Xây dựng các hàm trong `analysis.py`:
+  - `analyze_region_totals`
   - `analyze_genre_region_heatmap`
+  - `analyze_region_distribution`
   - `analyze_region_sales_over_time`
   - `analyze_top_games`
+  - `analyze_sales_distribution`
   - `run_all_analysis`
 - Phụ trách:
   - `/` (trang Index)
   - `/region-analysis`
+  - `/distribution-analysis`
   - `app.py`
 - Phụ trách các template:
   - `base.html`
   - `index.html`
   - `region_analysis.html`
+  - `distribution_analysis.html`
 - Phụ trách các thành phần:
   - `style.css`
   - `dashboard.js`
   - `requirements.txt`
   - `README.md`
 - Phụ trách biểu đồ:
-  - `fig6`: Heatmap thể loại và khu vực.
-  - `fig7`: Doanh số khu vực theo thời gian.
-  - `fig8`: Top các trò chơi có doanh số cao nhất.
+  - Heatmap thể loại và khu vực.
+  - Violinplot doanh số theo khu vực.
+  - Doanh số khu vực theo thời gian.
+  - Top các trò chơi có doanh số cao nhất.
+  - Histogram `Global_Sales`.
+  - Boxplot `Global_Sales` theo thể loại.
 
+## Lưu ý khi làm việc chung
+
+- `analysis/analysis.py`, `routes/analysis.py` và `routes/dashboard.py` là file dùng chung: mỗi người chỉ sửa hàm/route của mình.
 
 ## Cấu trúc phối hợp
 
