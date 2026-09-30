@@ -17,7 +17,7 @@ https://www.kaggle.com/datasets/gregorut/videogamesales?select=vgsales.csv
 25410210 - Lương Bá Minh Hiếu - Làm slide
 
 
-## Tổng hợp 8 nội dung phân tích
+## Tổng hợp các nội dung phân tích
 
 | STT | Nội dung | Thành viên |
 |---:|---|---|
