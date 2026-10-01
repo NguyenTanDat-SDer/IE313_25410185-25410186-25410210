@@ -31,10 +31,17 @@ from analysis.analysis import (
 
 analysis_bp = Blueprint("analysis", __name__)
 
-
-
-
-
+@analysis_bp.route("/time-analysis")
+def time_analysis():
+    """4.1 và 4.2: Số lượng trò chơi theo năm và tổng doanh số toàn cầu theo năm."""
+    df = get_dataframe()
+    games_per_year = analyze_games_per_year(df)
+    global_sales_per_year = analyze_global_sales_per_year(df)
+    return render_template(
+        "time_analysis.html",
+        games_per_year=games_per_year,
+        global_sales_per_year=global_sales_per_year,
+    )
 
 @analysis_bp.route("/region-analysis")
 def region_analysis():
@@ -56,7 +63,12 @@ def region_analysis():
 
 
 
-
+@analysis_bp.route("/publisher-analysis")
+def publisher_analysis():
+    """4.6: Top 10 nhà phát hành theo tổng doanh số toàn cầu."""
+    df = get_dataframe()
+    top_publishers = analyze_top_publishers(df)
+    return render_template("publisher_analysis.html", top_publishers=top_publishers)
 
 @analysis_bp.route("/distribution-analysis")
 def distribution_analysis():

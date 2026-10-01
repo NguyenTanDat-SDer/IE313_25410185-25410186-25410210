@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Nhà phát hành{% endblock %}
+{% block header %}Phân tích theo nhà phát hành (Publisher){% endblock %}
+{% block subtitle %}Top 10 nhà phát hành theo tổng doanh số toàn cầu{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>4.6. Top 10 nhà phát hành theo tổng doanh số toàn cầu</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=top_publishers.image) }}" alt="Top 10 nhà phát hành">
+    <p class="insight">
+        <strong>{{ top_publishers.top_publisher }}</strong> dẫn đầu với khoảng
+        <strong>{{ top_publishers.top_value }}</strong> triệu bản, chiếm khoảng
+        <strong>{{ top_publishers.top_share }}%</strong> tổng doanh số toàn cầu của dataset.
+        Các bản ghi thiếu Publisher không được đưa vào phép tổng hợp này.
+    </p>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>#</th><th>Nhà phát hành</th><th>Tổng doanh số (triệu bản)</th><th>Số game</th><th>Trung bình/game</th></tr></thead>
+            <tbody>
+                {% for row in top_publishers.table %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row["Publisher"] }}</td>
+                    <td>{{ row["Global_Sales"] }}</td>
+                    <td>{{ row["So_game"] }}</td>
+                    <td>{{ row["Trung_binh"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

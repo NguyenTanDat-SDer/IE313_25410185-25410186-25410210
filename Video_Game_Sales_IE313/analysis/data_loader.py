@@ -18,3 +18,41 @@ DEFAULT_DATA_PATH = os.path.join(
     "vgsales.csv",
 )
 
+def load_raw_data(path: str = DEFAULT_DATA_PATH) -> pd.DataFrame:
+    """
+    Đọc dữ liệu thô từ tệp CSV.
+
+    Parameters
+    ----------
+    path : str
+        Đường dẫn tới tệp vgsales.csv.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame chứa dữ liệu thô, chưa qua xử lý.
+    """
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Không tìm thấy tệp dữ liệu tại: {path}")
+
+    df = pd.read_csv(path)
+    return df
+
+
+@lru_cache(maxsize=1)
+def _load_and_preprocess_cached(path: str):
+    """Đọc và tiền xử lý dữ liệu một lần duy nhất, cache kết quả cho cả ứng dụng."""
+    # Import cục bộ để tránh vòng lặp import giữa data_loader và preprocessing
+    from analysis.preprocessing import preprocess_data
+
+    raw_df = load_raw_data(path)
+    return preprocess_data(raw_df)
+
+
+def get_dataframe(path: str = DEFAULT_DATA_PATH) -> pd.DataFrame:
+    """
+    Trả về DataFrame đã được tiền xử lý, dùng chung cho toàn bộ các route.
+    Dữ liệu chỉ được đọc và xử lý một lần (cache) để tránh đọc lại CSV
+    mỗi khi người dùng chuyển trang trên Dashboard.
+    """
+    return _load_and_preprocess_cached(path).copy()

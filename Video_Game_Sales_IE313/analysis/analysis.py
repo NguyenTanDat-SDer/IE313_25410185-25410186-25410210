@@ -234,7 +234,32 @@ def analyze_region_totals(df: pd.DataFrame):
 # ---------------------------------------------------------------------------
 # Top 10 nhà phát hành theo tổng doanh số toàn cầu
 # ---------------------------------------------------------------------------
+def analyze_top_publishers(df: pd.DataFrame, top_n: int = 10):
+    data = df.dropna(subset=["Publisher"])
+    pub = (
+        data.groupby("Publisher")["Global_Sales"]
+        .agg(Global_Sales="sum", So_game="count", Trung_binh="mean")
+        .sort_values("Global_Sales", ascending=False)
+        .head(top_n)
+        .round(2)
+        .reset_index()
+    )
 
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(data=pub, x="Global_Sales", y="Publisher", color="#64B5CD", ax=ax)
+    ax.set_title(f"Top {top_n} nhà phát hành theo tổng doanh số toàn cầu")
+    ax.set_xlabel("Tổng doanh số (triệu bản)")
+    ax.set_ylabel("Nhà phát hành")
+    img_path = _save_fig(fig, "fig11_top_publishers.png")
+
+    total = float(df["Global_Sales"].sum())
+    return {
+        "image": img_path,
+        "table": pub.to_dict(orient="records"),
+        "top_publisher": pub.iloc[0]["Publisher"],
+        "top_value": round(float(pub.iloc[0]["Global_Sales"]), 2),
+        "top_share": round(float(pub.iloc[0]["Global_Sales"]) / total * 100, 1),
+    }
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Tổng quan dữ liệu{% endblock %}
+{% block header %}Mô tả bộ dữ liệu{% endblock %}
+{% block subtitle %}Cấu trúc, kiểu dữ liệu và tình trạng giá trị thiếu của vgsales.csv{% endblock %}
+
+{% block content %}
+<section class="stat-grid">
+    <div class="stat-box">
+        <div class="stat-value">{{ "{:,}".format(overview.n_records) }}</div>
+        <div class="stat-label">Bản ghi</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-value">{{ overview.n_cols }}</div>
+        <div class="stat-label">Thuộc tính</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-value">{{ overview.n_platforms }}</div>
+        <div class="stat-label">Nền tảng</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-value">{{ overview.n_genres }}</div>
+        <div class="stat-label">Thể loại</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-value">{{ overview.n_publishers }}</div>
+        <div class="stat-label">Nhà phát hành</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-value">{{ overview.year_min }}&ndash;{{ overview.year_max }}</div>
+        <div class="stat-label">Khoảng năm</div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>Giá trị thiếu (Missing Values)</h2>
+    <p class="card-note">
+        Các giá trị thiếu ở Year không được thay thế bằng một năm cụ thể; các bản ghi
+        thiếu Year chỉ bị loại khỏi các phép tổng hợp theo thời gian.
+    </p>
+    <table class="data-table">
+        <thead>
+            <tr><th>Cột</th><th>Số giá trị thiếu</th><th>Tỷ lệ (%)</th></tr>
+        </thead>
+        <tbody>
+            {% for row in overview.missing_summary %}
+            <tr>
+                <td>{{ row["Cột"] }}</td>
+                <td>{{ row["Số giá trị thiếu"] }}</td>
+                <td>{{ row["Tỷ lệ (%)"] }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>Thống kê mô tả các biến số</h2>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Biến</th><th>count</th><th>mean</th><th>std</th><th>min</th><th>Q1</th><th>Trung vị</th><th>Q3</th><th>max</th></tr></thead>
+            <tbody>
+                {% for r in describe_table %}
+                <tr><td>{{ r["Biến"] }}</td><td>{{ r["count"]|int }}</td><td>{{ r["mean"] }}</td><td>{{ r["std"] }}</td><td>{{ r["min"] }}</td><td>{{ r["Q1"] }}</td><td>{{ r["Trung vị"] }}</td><td>{{ r["Q3"] }}</td><td>{{ r["max"] }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="card">
+    <h2>Xem trước dữ liệu (10 dòng đầu)</h2>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead>
+                <tr>{% for col in columns %}<th>{{ col }}</th>{% endfor %}</tr>
+            </thead>
+            <tbody>
+                {% for row in sample_rows %}
+                <tr>
+                    {% for col in columns %}<td>{{ row[col] }}</td>{% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
