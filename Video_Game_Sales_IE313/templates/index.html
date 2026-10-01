@@ -36,6 +36,16 @@
         <h3>Phân tích nền tảng</h3>
         <p>Top 10 nền tảng có tổng doanh số toàn cầu cao nhất trong dataset.</p>
     </a>
+    <a href="{{ url_for('analysis.publisher_analysis') }}" class="feature-card">
+        <div class="feature-icon">🏢</div>
+        <h3>Nhà phát hành</h3>
+        <p>Top 10 nhà phát hành theo tổng doanh số toàn cầu và doanh số trung bình mỗi game.</p>
+    </a>
+    <a href="{{ url_for('analysis.distribution_analysis') }}" class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Phân phối doanh số</h3>
+        <p>Histogram và boxplot Seaborn cho thấy doanh số phân bố rất lệch phải.</p>
+    </a>
     <a href="{{ url_for('analysis.region_analysis') }}" class="feature-card">
         <div class="feature-icon">🌍</div>
         <h3>Phân tích khu vực &amp; Top Games</h3>
