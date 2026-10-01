@@ -56,13 +56,58 @@ def _save_fig(fig, filename: str) -> str:
 # ---------------------------------------------------------------------------
 # 4.1. Số lượng trò chơi theo năm
 # ---------------------------------------------------------------------------
+def analyze_games_per_year(df: pd.DataFrame):
+    data = df.dropna(subset=["Year"]).copy()
+    data["Year"] = data["Year"].astype(int)
+    counts = data.groupby("Year").size().reset_index(name="Số lượng trò chơi")
 
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.barplot(data=counts, x="Year", y="Số lượng trò chơi", color="#4C72B0", ax=ax)
+    ax.set_title("Số lượng trò chơi phát hành theo năm")
+    ax.set_xlabel("Năm")
+    ax.set_ylabel("Số lượng trò chơi")
+    ax.tick_params(axis="x", rotation=90)
+    img_path = _save_fig(fig, "fig1_year_game_count.png")
+
+    peak_year = int(counts.loc[counts["Số lượng trò chơi"].idxmax(), "Year"])
+    peak_value = int(counts["Số lượng trò chơi"].max())
+
+    return {
+        "image": img_path,
+        "table": counts.to_dict(orient="records"),
+        "peak_year": peak_year,
+        "peak_value": peak_value,
+    }
 
 
 # ---------------------------------------------------------------------------
 # 4.2. Tổng doanh số toàn cầu theo năm
 # ---------------------------------------------------------------------------
+def analyze_global_sales_per_year(df: pd.DataFrame):
+    data = df.dropna(subset=["Year"]).copy()
+    data["Year"] = data["Year"].astype(int)
+    sales_by_year = (
+        data.groupby("Year")["Global_Sales"].sum().reset_index(name="Global_Sales")
+    )
 
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.lineplot(
+        data=sales_by_year, x="Year", y="Global_Sales", marker="o", color="#C44E52", ax=ax
+    )
+    ax.set_title("Tổng doanh số toàn cầu (Global Sales) theo năm")
+    ax.set_xlabel("Năm")
+    ax.set_ylabel("Tổng doanh số (triệu bản)")
+    ax.tick_params(axis="x", rotation=90)
+    img_path = _save_fig(fig, "fig2_year_global_sales.png")
+
+    peak_row = sales_by_year.loc[sales_by_year["Global_Sales"].idxmax()]
+
+    return {
+        "image": img_path,
+        "table": sales_by_year.round(2).to_dict(orient="records"),
+        "peak_year": int(peak_row["Year"]),
+        "peak_value": round(float(peak_row["Global_Sales"]), 2),
+    }
 
 
 # ---------------------------------------------------------------------------
