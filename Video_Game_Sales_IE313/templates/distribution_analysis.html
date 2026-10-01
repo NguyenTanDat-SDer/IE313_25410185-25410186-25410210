@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Phân phối doanh số{% endblock %}
+{% block header %}Phân phối doanh số toàn cầu{% endblock %}
+{% block subtitle %}Histogram và boxplot Seaborn cho biến Global_Sales{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>4.10a. Histogram Global_Sales (thang log)</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=dist.hist_image) }}" alt="Histogram Global_Sales">
+    <p class="insight">
+        Trung vị chỉ khoảng <strong>{{ dist.stats.median }}</strong> triệu bản trong khi trung bình
+        là <strong>{{ dist.stats.mean }}</strong> triệu bản; độ lệch (skewness) khoảng
+        <strong>{{ dist.stats.skew }}</strong>. Khoảng <strong>{{ dist.stats.pct_lt_05m }}%</strong>
+        số game bán dưới 0,5 triệu bản, chỉ <strong>{{ dist.stats.pct_ge_1m }}%</strong> đạt từ 1 triệu bản trở lên,
+        và 1% game bán chạy nhất chiếm khoảng <strong>{{ dist.stats.top1pct_share }}%</strong> tổng doanh số.
+    </p>
+</section>
+
+<section class="card">
+    <h2>4.10b. Boxplot Global_Sales theo thể loại (thang log)</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=dist.box_image) }}" alt="Boxplot theo thể loại">
+    <p class="insight">
+        Các thể loại sắp xếp theo trung vị giảm dần. Nhiều điểm ngoại lai phía bên phải ở hầu hết thể loại
+        cho thấy doanh số của mỗi thể loại bị kéo lên bởi một số ít game bán rất chạy.
+    </p>
+</section>
+
+<section class="card">
+    <h2>Thống kê mô tả Global_Sales</h2>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Chỉ tiêu</th><th>Giá trị</th></tr></thead>
+            <tbody>
+                <tr><td>Số bản ghi</td><td>{{ dist.stats.count }}</td></tr>
+                <tr><td>Trung bình</td><td>{{ dist.stats.mean }}</td></tr>
+                <tr><td>Độ lệch chuẩn</td><td>{{ dist.stats.std }}</td></tr>
+                <tr><td>Nhỏ nhất</td><td>{{ dist.stats.min }}</td></tr>
+                <tr><td>Q1 (25%)</td><td>{{ dist.stats.q25 }}</td></tr>
+                <tr><td>Trung vị</td><td>{{ dist.stats.median }}</td></tr>
+                <tr><td>Q3 (75%)</td><td>{{ dist.stats.q75 }}</td></tr>
+                <tr><td>Phân vị 90%</td><td>{{ dist.stats.p90 }}</td></tr>
+                <tr><td>Phân vị 99%</td><td>{{ dist.stats.p99 }}</td></tr>
+                <tr><td>Lớn nhất</td><td>{{ dist.stats.max }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
