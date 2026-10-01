@@ -1,6 +1,9 @@
 """
 app.py
 ------
+Điểm khởi chạy chính của ứng dụng Flask Web Dashboard cho đề tài
+"Phân tích thăm dò dữ liệu trò chơi điện tử (Video Game Sales) bằng
+thư viện Seaborn" - IE313.
 
 Chạy ứng dụng:
     python app.py
