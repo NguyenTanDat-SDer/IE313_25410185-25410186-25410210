@@ -32,8 +32,14 @@
                 <a href="{{ url_for('analysis.platform_analysis') }}" class="{{ 'active' if request.endpoint == 'analysis.platform_analysis' }}">
                     <span class="nav-icon">🕹️</span> Phân tích nền tảng
                 </a>
+                <a href="{{ url_for('analysis.publisher_analysis') }}" class="{{ 'active' if request.endpoint == 'analysis.publisher_analysis' }}">
+                    <span class="nav-icon">🏢</span> Nhà phát hành
+                </a>
                 <a href="{{ url_for('analysis.region_analysis') }}" class="{{ 'active' if request.endpoint == 'analysis.region_analysis' }}">
                     <span class="nav-icon">🌍</span> Phân tích khu vực
+                </a>
+                <a href="{{ url_for('analysis.distribution_analysis') }}" class="{{ 'active' if request.endpoint == 'analysis.distribution_analysis' }}">
+                    <span class="nav-icon">📊</span> Phân phối doanh số
                 </a>
             </nav>
             <div class="sidebar-footer">
