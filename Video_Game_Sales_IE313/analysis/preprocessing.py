@@ -10,4 +10,14 @@ báo cáo:
     khỏi phép tổng hợp (nhưng vẫn giữ nguyên trong dữ liệu tổng thể).
 """
 
+import pandas as pd
+
+NUMERIC_SALES_COLS = [
+    "NA_Sales",
+    "EU_Sales",
+    "JP_Sales",
+    "Other_Sales",
+    "Global_Sales",
+]
+
 
