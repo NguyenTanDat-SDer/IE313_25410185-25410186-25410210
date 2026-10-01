@@ -5,17 +5,58 @@
 
 {% block content %}
 <section class="card">
-    <h2>4.6. Heatmap doanh số theo thể loại và khu vực</h2>
+    <h2>4.7. Doanh số theo khu vực và heatmap thể loại - khu vực</h2>
     <img class="chart-img" src="{{ url_for('static', filename=genre_region_heatmap.image) }}" alt="Heatmap thể loại - khu vực">
     <p class="insight">
         Heatmap cho phép quan sát đồng thời Genre và khu vực: mức độ tiêu thụ không nhất
         thiết giống nhau giữa các khu vực, một thể loại có tổng doanh số toàn cầu cao có
         thể có mức đóng góp khác nhau tại từng khu vực.
     </p>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Khu vực</th><th>Tổng doanh số (triệu bản)</th><th>Tỷ trọng (%)</th></tr></thead>
+            <tbody>
+                {% for row in region_totals.table %}
+                <tr><td>{{ row["Khu vực"] }}</td><td>{{ row["Tổng doanh số"] }}</td><td>{{ row["Tỷ trọng (%)"] }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h3 class="sub-title">Tỷ trọng từng khu vực trong doanh số mỗi thể loại (%)</h3>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Thể loại</th><th>Bắc Mỹ</th><th>Châu Âu</th><th>Nhật Bản</th><th>Khu vực khác</th></tr></thead>
+            <tbody>
+                {% for row in genre_region_heatmap.share_table %}
+                <tr><td>{{ row["Genre"] }}</td><td>{{ row["Bắc Mỹ"] }}</td><td>{{ row["Châu Âu"] }}</td><td>{{ row["Nhật Bản"] }}</td><td>{{ row["Khu vực khác"] }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </section>
 
 <section class="card">
-    <h2>4.7. Doanh số các khu vực theo thời gian</h2>
+    <h2>4.7b. Phân phối doanh số theo khu vực (violinplot)</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=region_distribution.image) }}" alt="Violinplot doanh số theo khu vực">
+    <p class="insight">
+        Biểu đồ chỉ gồm các trò chơi có doanh số lớn hơn 0 tại khu vực đó. Tỷ lệ trò chơi có doanh số bằng 0
+        (ghi nhận là 0 trong dữ liệu, có thể do chưa phát hành hoặc doanh số quá nhỏ sau khi làm tròn) được
+        thống kê trong bảng bên dưới.
+    </p>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Khu vực</th><th>% game có doanh số = 0</th><th>Số game có doanh số &gt; 0</th><th>Trung vị (&gt;0)</th><th>Trung bình (&gt;0)</th><th>Phân vị 90% (&gt;0)</th></tr></thead>
+            <tbody>
+                {% for row in region_distribution.table %}
+                <tr><td>{{ row["Khu vực"] }}</td><td>{{ row["Ty_le_0"] }}</td><td>{{ row["So_game_co_doanh_so"] }}</td><td>{{ row["Trung_vi"] }}</td><td>{{ row["Trung_binh"] }}</td><td>{{ row["P90"] }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="card">
+    <h2>4.8. Doanh số các khu vực theo thời gian</h2>
     <img class="chart-img" src="{{ url_for('static', filename=region_sales_over_time.image) }}" alt="Doanh số khu vực theo thời gian">
     <p class="insight">
         Bắc Mỹ và châu Âu là những khu vực đóng góp đáng kể vào doanh số toàn cầu trong
@@ -25,7 +66,7 @@
 </section>
 
 <section class="card">
-    <h2>4.8. Top 10 trò chơi theo doanh số toàn cầu</h2>
+    <h2>4.9. Top 10 trò chơi theo doanh số toàn cầu</h2>
     <img class="chart-img" src="{{ url_for('static', filename=top_games.image) }}" alt="Top 10 trò chơi theo doanh số">
     <p class="insight">
         <strong>{{ top_games.top_name }}</strong> đứng đầu với Global_Sales đạt
