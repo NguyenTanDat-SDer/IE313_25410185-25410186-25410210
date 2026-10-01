@@ -58,9 +58,11 @@ def _save_fig(fig, filename: str) -> str:
 # ---------------------------------------------------------------------------
 
 
+
 # ---------------------------------------------------------------------------
 # 4.2. Tổng doanh số toàn cầu theo năm
 # ---------------------------------------------------------------------------
+
 
 
 # ---------------------------------------------------------------------------
@@ -68,14 +70,17 @@ def _save_fig(fig, filename: str) -> str:
 # ---------------------------------------------------------------------------
 
 
+
 # ---------------------------------------------------------------------------
 # 4.4. Doanh số trung bình theo thể loại
 # ---------------------------------------------------------------------------
 
 
+
 # ---------------------------------------------------------------------------
 # 4.5. Top 10 nền tảng theo tổng doanh số toàn cầu
 # ---------------------------------------------------------------------------
+
 
 
 # ---------------------------------------------------------------------------
@@ -95,9 +100,13 @@ def analyze_genre_region_heatmap(df: pd.DataFrame):
 
     table = pivot.round(2).reset_index().to_dict(orient="records")
 
+    share = pivot.div(pivot.sum(axis=1), axis=0) * 100
+    share_table = share.round(1).reset_index().to_dict(orient="records")
+
     return {
         "image": img_path,
         "table": table,
+        "share_table": share_table,
         "columns": ["Genre"] + list(REGION_LABELS.values()),
     }
 
@@ -160,15 +169,140 @@ def analyze_top_games(df: pd.DataFrame, top_n: int = 10):
     }
 
 
+# ---------------------------------------------------------------------------
+# Bảng tổng doanh số theo khu vực (dùng cho mục 4.7)
+# ---------------------------------------------------------------------------
+def analyze_region_totals(df: pd.DataFrame):
+    totals = df[REGION_COLS].sum()
+    total_all = totals.sum()
+    rows = [
+        {
+            "Khu vực": REGION_LABELS[c],
+            "Tổng doanh số": round(float(totals[c]), 1),
+            "Tỷ trọng (%)": round(float(totals[c] / total_all * 100), 1),
+        }
+        for c in REGION_COLS
+    ]
+    return {"table": rows}
+
+
+# ---------------------------------------------------------------------------
+# Top 10 nhà phát hành theo tổng doanh số toàn cầu
+# ---------------------------------------------------------------------------
+
+
+
+# ---------------------------------------------------------------------------
+# Phân phối Global_Sales: histplot + boxplot theo thể loại
+# ---------------------------------------------------------------------------
+def analyze_sales_distribution(df: pd.DataFrame):
+    g = df["Global_Sales"]
+
+    # Histogram (trục x log để nhìn rõ đuôi phân phối lệch phải)
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.histplot(g, bins=60, log_scale=True, color="#4C72B0", ax=ax)
+    ax.axvline(g.median(), color="#C44E52", linestyle="--", label=f"Trung vị = {g.median():.2f}")
+    ax.axvline(g.mean(), color="#55A868", linestyle="--", label=f"Trung bình = {g.mean():.2f}")
+    ax.set_title("Phân phối doanh số toàn cầu của mỗi trò chơi (trục log)")
+    ax.set_xlabel("Global_Sales (triệu bản, thang log)")
+    ax.set_ylabel("Số lượng trò chơi")
+    ax.legend()
+    hist_path = _save_fig(fig, "fig9_sales_distribution.png")
+
+    # Boxplot theo thể loại
+    order = df.groupby("Genre")["Global_Sales"].median().sort_values(ascending=False).index
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.boxplot(data=df, x="Global_Sales", y="Genre", order=order, ax=ax, fliersize=2)
+    ax.set_xscale("log")
+    ax.set_title("Phân phối Global_Sales theo thể loại (trục log)")
+    ax.set_xlabel("Global_Sales (triệu bản, thang log)")
+    ax.set_ylabel("Thể loại")
+    box_path = _save_fig(fig, "fig10_genre_boxplot.png")
+
+    total = float(g.sum())
+    n = len(g)
+    stats = {
+        "count": int(n),
+        "mean": round(float(g.mean()), 3),
+        "std": round(float(g.std()), 3),
+        "min": round(float(g.min()), 2),
+        "q25": round(float(g.quantile(0.25)), 2),
+        "median": round(float(g.median()), 2),
+        "q75": round(float(g.quantile(0.75)), 2),
+        "p90": round(float(g.quantile(0.90)), 2),
+        "p99": round(float(g.quantile(0.99)), 2),
+        "max": round(float(g.max()), 2),
+        "skew": round(float(g.skew()), 2),
+        "pct_ge_1m": round(float((g >= 1).mean() * 100), 2),
+        "pct_lt_05m": round(float((g < 0.5).mean() * 100), 2),
+        "top1pct_share": round(float(g.nlargest(int(n * 0.01)).sum() / total * 100), 2),
+    }
+    return {"hist_image": hist_path, "box_image": box_path, "stats": stats}
+
+
+# ---------------------------------------------------------------------------
+# Phân phối Global_Sales theo nền tảng (Top 10) - boxplot
+# ---------------------------------------------------------------------------
+
+
+
+# ---------------------------------------------------------------------------
+# Phân phối doanh số theo khu vực - violinplot (chỉ các game có doanh số > 0)
+# ---------------------------------------------------------------------------
+def analyze_region_distribution(df: pd.DataFrame):
+    import numpy as np
+
+    rows = []
+    frames = []
+    for col in REGION_COLS:
+        x = df[col]
+        nz = x[x > 0]
+        rows.append(
+            {
+                "Khu vực": REGION_LABELS[col],
+                "Ty_le_0": round(float((x == 0).mean() * 100), 1),
+                "So_game_co_doanh_so": int(len(nz)),
+                "Trung_vi": round(float(nz.median()), 3),
+                "Trung_binh": round(float(nz.mean()), 3),
+                "P90": round(float(nz.quantile(0.9)), 3),
+            }
+        )
+        frames.append(
+            pd.DataFrame(
+                {"Khu vực": REGION_LABELS[col], "log10_sales": np.log10(nz.values)}
+            )
+        )
+    long_df = pd.concat(frames, ignore_index=True)
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.violinplot(
+        data=long_df, x="Khu vực", y="log10_sales", inner="quartile", cut=0, ax=ax
+    )
+    ticks = [-2, -1, 0, 1]
+    ax.set_yticks(ticks)
+    ax.set_yticklabels([f"{10 ** t:g}" for t in ticks])
+    ax.set_title("Phân phối doanh số theo khu vực (chỉ game có doanh số > 0, thang log)")
+    ax.set_xlabel("Khu vực")
+    ax.set_ylabel("Doanh số (triệu bản, thang log)")
+    img_path = _save_fig(fig, "fig13_region_violin.png")
+
+    return {"image": img_path, "table": rows}
+
+
 def run_all_analysis(df: pd.DataFrame) -> dict:
-    """Chạy toàn bộ 8 phân tích và trả về dict kết quả, dùng cho trang Overview."""
+    """Chạy toàn bộ các phân tích và trả về dict kết quả, dùng cho trang Overview."""
     return {
-        # "games_per_year": analyze_games_per_year(df),
-        # "global_sales_per_year": analyze_global_sales_per_year(df),
-        # "genre_sales": analyze_genre_sales(df),
-        # "genre_average_sales": analyze_genre_average_sales(df),
-        # "platform_sales": analyze_platform_sales(df),
+        "games_per_year": analyze_games_per_year(df),
+        "global_sales_per_year": analyze_global_sales_per_year(df),
+        "genre_sales": analyze_genre_sales(df),
+        "genre_average_sales": analyze_genre_average_sales(df),
+        "platform_sales": analyze_platform_sales(df),
         "genre_region_heatmap": analyze_genre_region_heatmap(df),
         "region_sales_over_time": analyze_region_sales_over_time(df),
         "top_games": analyze_top_games(df),
+        "region_totals": analyze_region_totals(df),
+        "top_publishers": analyze_top_publishers(df),
+        "sales_distribution": analyze_sales_distribution(df),
+        "platform_distribution": analyze_platform_distribution(df),
+        "region_distribution": analyze_region_distribution(df),
     }
