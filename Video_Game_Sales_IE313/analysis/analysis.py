@@ -397,7 +397,29 @@ def analyze_sales_distribution(df: pd.DataFrame):
 # ---------------------------------------------------------------------------
 # Phân phối Global_Sales theo nền tảng (Top 10) - boxplot
 # ---------------------------------------------------------------------------
+def analyze_platform_distribution(df: pd.DataFrame, top_n: int = 10):
+    top_platforms = (
+        df.groupby("Platform")["Global_Sales"].sum().nlargest(top_n).index.tolist()
+    )
+    data = df[df["Platform"].isin(top_platforms)]
 
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.boxplot(
+        data=data, x="Global_Sales", y="Platform", order=top_platforms, ax=ax, fliersize=2
+    )
+    ax.set_xscale("log")
+    ax.set_title(f"Phân phối Global_Sales theo nền tảng (Top {top_n}, trục log)")
+    ax.set_xlabel("Global_Sales (triệu bản, thang log)")
+    ax.set_ylabel("Nền tảng")
+    img_path = _save_fig(fig, "fig12_platform_boxplot.png")
+
+    stats = data.groupby("Platform")["Global_Sales"].agg(
+        So_game="count", Trung_binh="mean", Trung_vi="median"
+    )
+    stats["Ty_le"] = stats["Trung_binh"] / stats["Trung_vi"]
+    stats = stats.loc[top_platforms].round(3).reset_index()
+
+    return {"image": img_path, "table": stats.to_dict(orient="records")}
 
 
 # ---------------------------------------------------------------------------
@@ -444,7 +466,7 @@ def analyze_region_distribution(df: pd.DataFrame):
 
 
 def run_all_analysis(df: pd.DataFrame) -> dict:
-    """Chạy toàn bộ các phân tích và trả về dict kết quả, dùng cho trang Overview."""
+    """Chạy toàn bộ 8 phân tích và trả về dict kết quả, dùng cho trang Overview."""
     return {
         "games_per_year": analyze_games_per_year(df),
         "global_sales_per_year": analyze_global_sales_per_year(df),

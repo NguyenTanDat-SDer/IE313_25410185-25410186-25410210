@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Phân tích nền tảng{% endblock %}
+{% block header %}Phân tích theo nền tảng (Platform){% endblock %}
+{% block subtitle %}Top 10 nền tảng theo tổng doanh số toàn cầu{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>4.5. Top 10 nền tảng theo tổng doanh số toàn cầu</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=platform_sales.image) }}" alt="Top 10 nền tảng theo doanh số">
+    <p class="insight">
+        <strong>{{ platform_sales.top_platform }}</strong> có tổng doanh số toàn cầu cao
+        nhất trong dataset, khoảng <strong>{{ platform_sales.top_value }}</strong> triệu
+        bản. Doanh số tổng của một nền tảng còn phụ thuộc vào số lượng trò chơi phát hành
+        trên nền tảng đó và thời gian nền tảng tồn tại trong dataset, nên chỉ tiêu này phù
+        hợp để đánh giá quy mô hơn là hiệu quả từng trò chơi.
+    </p>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>#</th><th>Nền tảng</th><th>Tổng doanh số (triệu bản)</th><th>Số game</th><th>Trung bình/game</th></tr></thead>
+            <tbody>
+                {% for row in platform_sales.table %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row["Platform"] }}</td>
+                    <td>{{ row["Global_Sales"] }}</td>
+                    <td>{{ row["So_game"] }}</td>
+                    <td>{{ row["Trung_binh"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<section class="card">
+    <h2>4.5b. Phân phối Global_Sales theo nền tảng (boxplot)</h2>
+    <img class="chart-img" src="{{ url_for('static', filename=platform_distribution.image) }}" alt="Boxplot theo nền tảng">
+    <p class="insight">
+        Boxplot cho thấy doanh số điển hình (trung vị) của mỗi trò chơi trên từng nền tảng và mức độ ảnh hưởng
+        của các trò chơi bán rất chạy (điểm ngoại lai). Nền tảng có tỷ lệ trung bình/trung vị càng cao thì
+        doanh số càng phụ thuộc vào một số ít trò chơi nổi bật.
+    </p>
+    <div class="table-scroll">
+        <table class="data-table">
+            <thead><tr><th>Nền tảng</th><th>Số game</th><th>Trung bình</th><th>Trung vị</th><th>Trung bình / Trung vị</th></tr></thead>
+            <tbody>
+                {% for row in platform_distribution.table %}
+                <tr><td>{{ row["Platform"] }}</td><td>{{ row["So_game"] }}</td><td>{{ row["Trung_binh"] }}</td><td>{{ row["Trung_vi"] }}</td><td>{{ "%.2f"|format(row["Ty_le"]) }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

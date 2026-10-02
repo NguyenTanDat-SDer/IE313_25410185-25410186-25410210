@@ -31,6 +31,7 @@ from analysis.analysis import (
 
 analysis_bp = Blueprint("analysis", __name__)
 
+
 @analysis_bp.route("/time-analysis")
 def time_analysis():
     """4.1 và 4.2: Số lượng trò chơi theo năm và tổng doanh số toàn cầu theo năm."""
@@ -42,6 +43,33 @@ def time_analysis():
         games_per_year=games_per_year,
         global_sales_per_year=global_sales_per_year,
     )
+
+
+@analysis_bp.route("/genre-analysis")
+def genre_analysis():
+    """4.3 và 4.4: Tổng doanh số và doanh số trung bình theo thể loại."""
+    df = get_dataframe()
+    genre_sales = analyze_genre_sales(df)
+    genre_average_sales = analyze_genre_average_sales(df)
+    return render_template(
+        "genre_analysis.html",
+        genre_sales=genre_sales,
+        genre_average_sales=genre_average_sales,
+    )
+
+
+@analysis_bp.route("/platform-analysis")
+def platform_analysis():
+    """4.5: Top 10 nền tảng theo tổng doanh số toàn cầu."""
+    df = get_dataframe()
+    platform_sales = analyze_platform_sales(df)
+    platform_distribution = analyze_platform_distribution(df)
+    return render_template(
+        "platform_analysis.html",
+        platform_sales=platform_sales,
+        platform_distribution=platform_distribution,
+    )
+
 
 @analysis_bp.route("/region-analysis")
 def region_analysis():
@@ -62,13 +90,13 @@ def region_analysis():
     )
 
 
-
 @analysis_bp.route("/publisher-analysis")
 def publisher_analysis():
     """4.6: Top 10 nhà phát hành theo tổng doanh số toàn cầu."""
     df = get_dataframe()
     top_publishers = analyze_top_publishers(df)
     return render_template("publisher_analysis.html", top_publishers=top_publishers)
+
 
 @analysis_bp.route("/distribution-analysis")
 def distribution_analysis():
