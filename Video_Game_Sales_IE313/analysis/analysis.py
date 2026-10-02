@@ -113,19 +113,103 @@ def analyze_global_sales_per_year(df: pd.DataFrame):
 # ---------------------------------------------------------------------------
 # 4.3. Tổng doanh số theo thể loại (Genre)
 # ---------------------------------------------------------------------------
+def analyze_genre_summary(df: pd.DataFrame) -> list:
+    """Bảng tổng hợp theo thể loại: tổng, số game, trung bình, trung vị (Global_Sales)."""
+    summary = (
+        df.groupby("Genre")["Global_Sales"]
+        .agg(Tong="sum", So_game="count", Trung_binh="mean", Trung_vi="median")
+        .sort_values("Tong", ascending=False)
+        .round(3)
+        .reset_index()
+    )
+    return summary.to_dict(orient="records")
 
+
+def analyze_genre_sales(df: pd.DataFrame):
+    genre_sales = (
+        df.groupby("Genre")["Global_Sales"]
+        .sum()
+        .sort_values(ascending=False)
+        .reset_index()
+    )
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(
+        data=genre_sales, x="Global_Sales", y="Genre", color="#55A868", ax=ax
+    )
+    ax.set_title("Tổng doanh số toàn cầu theo thể loại (Genre)")
+    ax.set_xlabel("Tổng doanh số (triệu bản)")
+    ax.set_ylabel("Thể loại")
+    img_path = _save_fig(fig, "fig3_genre_sales.png")
+
+    return {
+        "image": img_path,
+        "table": genre_sales.round(2).to_dict(orient="records"),
+        "summary_table": analyze_genre_summary(df),
+        "top_genre": genre_sales.iloc[0]["Genre"],
+        "top_value": round(float(genre_sales.iloc[0]["Global_Sales"]), 2),
+        "bottom_genre": genre_sales.iloc[-1]["Genre"],
+        "bottom_value": round(float(genre_sales.iloc[-1]["Global_Sales"]), 2),
+    }
 
 
 # ---------------------------------------------------------------------------
 # 4.4. Doanh số trung bình theo thể loại
 # ---------------------------------------------------------------------------
+def analyze_genre_average_sales(df: pd.DataFrame):
+    genre_avg = (
+        df.groupby("Genre")["Global_Sales"]
+        .mean()
+        .sort_values(ascending=False)
+        .reset_index()
+    )
+    genre_avg.columns = ["Genre", "Avg_Global_Sales"]
 
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(
+        data=genre_avg, x="Avg_Global_Sales", y="Genre", color="#8172B2", ax=ax
+    )
+    ax.set_title("Doanh số toàn cầu trung bình trên mỗi trò chơi theo thể loại")
+    ax.set_xlabel("Doanh số trung bình (triệu bản/trò chơi)")
+    ax.set_ylabel("Thể loại")
+    img_path = _save_fig(fig, "fig4_genre_average_sales.png")
+
+    return {
+        "image": img_path,
+        "table": genre_avg.round(3).to_dict(orient="records"),
+        "top_genre": genre_avg.iloc[0]["Genre"],
+        "top_value": round(float(genre_avg.iloc[0]["Avg_Global_Sales"]), 3),
+    }
 
 
 # ---------------------------------------------------------------------------
 # 4.5. Top 10 nền tảng theo tổng doanh số toàn cầu
 # ---------------------------------------------------------------------------
+def analyze_platform_sales(df: pd.DataFrame, top_n: int = 10):
+    platform_sales = (
+        df.groupby("Platform")["Global_Sales"]
+        .agg(Global_Sales="sum", So_game="count", Trung_binh="mean")
+        .sort_values("Global_Sales", ascending=False)
+        .head(top_n)
+        .round(3)
+        .reset_index()
+    )
 
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(
+        data=platform_sales, x="Global_Sales", y="Platform", color="#CCB974", ax=ax
+    )
+    ax.set_title(f"Top {top_n} nền tảng theo tổng doanh số toàn cầu")
+    ax.set_xlabel("Tổng doanh số (triệu bản)")
+    ax.set_ylabel("Nền tảng")
+    img_path = _save_fig(fig, "fig5_platform_sales.png")
+
+    return {
+        "image": img_path,
+        "table": platform_sales.round(2).to_dict(orient="records"),
+        "top_platform": platform_sales.iloc[0]["Platform"],
+        "top_value": round(float(platform_sales.iloc[0]["Global_Sales"]), 2),
+    }
 
 
 # ---------------------------------------------------------------------------
